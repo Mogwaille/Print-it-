@@ -18,42 +18,46 @@ const slides = [
 	}
 ]
 
-// Déclaration des flèches
-let arrowLeft = document.getElementById("arrow-left")
+// Déclaration des constantes et de la variable
+const arrowLeft = document.getElementById("arrow-left")
+const arrowRight = document.getElementById("arrow-right")
+const dots = document.querySelectorAll(".dot")
+const bannerImg = document.querySelector(".banner-img")
+const tagLine = document.querySelector("#banner p")
+let compteur = 0
 
-let arrowRight = document.getElementById("arrow-right")
+// Fonction pour changer le point selectionné
+function changeSelectedDot(){
+    dots.forEach(dot => dot.classList.remove("dot_selected"))
+    dots[compteur].classList.add("dot_selected")
+}
 
-// Fonction pour changer les points
-function changeSelectedDot(direction) {
-    const dots = document.querySelectorAll('.dot')
-    const dotSelected = document.querySelector('.dot_selected')
-    const indexSelected = Array.from(dots).indexOf(dotSelected)
-    let indexNew
-    if (direction === "left") {
-        indexNew = (indexSelected - 1 + dots.length) % dots.length
-    } else if (direction === "right") {
-        indexNew = (indexSelected + 1) % dots.length
+// Fonction pour changer l'image, le paragraphe et le alt
+function carouselChange(){
+    bannerImg.src = `assets/images/slideshow/${slides[compteur].image}`
+    bannerImg.alt = slides[compteur].tagLine
+    tagLine.innerHTML = slides[compteur].tagLine
+}
+
+//Évènement au clic sur la flèche gauche
+arrowLeft.addEventListener("click", function () {
+    compteur--
+    if(compteur < 0){
+        compteur = slides.length-1
     }
-    dotSelected.classList.remove("dot_selected")
-    dots[indexNew].classList.add("dot_selected")
-	carouselChange(indexNew)
-}
-
-arrowLeft.addEventListener("click", () => {
-    changeSelectedDot("left")
+    carouselChange()
+    changeSelectedDot()
 })
 
-arrowRight.addEventListener("click", () => {
-    changeSelectedDot("right")
+//Évènement au clic sur la flèche droite
+arrowRight.addEventListener("click", function () {
+    compteur++
+    if(compteur == slides.length){
+        compteur = 0
+    }
+    carouselChange()
+    changeSelectedDot()
 })
 
-// Fonction pour changer le carousel
-function carouselChange(index) {
-    const bannerImg = document.querySelector(".banner-img")
-    const tagLine = document.querySelector("#banner p")
-    bannerImg.src = `./assets/images/slideshow/${slides[index].image}`
-    bannerImg.alt = slides[index].tagLine
-    tagLine.innerHTML = slides[index].tagLine
-}
-
+//Réinitialisation du carousel à l'actualisation de la page
 carouselChange(0)
